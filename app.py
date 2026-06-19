@@ -56,18 +56,20 @@ def landing():
     return render_template('index.html')
 
 
-# Folder where a built APK can be dropped to make it downloadable.
-DOWNLOAD_DIR = os.path.join(os.path.dirname(__file__), 'static', 'downloads')
-APK_NAME = 'e-rickshaw.apk'
+# The built APK lives in backend/static. Drop a new build in and update APK_NAME.
+DOWNLOAD_DIR = os.path.join(os.path.dirname(__file__), 'static')
+APK_NAME = 'E-Rickshaw v0.1.apk'
 
 
 @app.route('/download')
 def download_app():
-    """Serve the Android APK if a build has been placed in static/downloads,
-    otherwise show a friendly 'coming soon' page."""
+    """Serve the Android APK if a build is present, otherwise show a friendly
+    'coming soon' page."""
     apk_path = os.path.join(DOWNLOAD_DIR, APK_NAME)
     if os.path.exists(apk_path):
-        return send_from_directory(DOWNLOAD_DIR, APK_NAME, as_attachment=True)
+        return send_from_directory(
+            DOWNLOAD_DIR, APK_NAME,
+            as_attachment=True, download_name='E-Rickshaw-v0.1.apk')
     return render_template('download_soon.html'), 404
 
 
