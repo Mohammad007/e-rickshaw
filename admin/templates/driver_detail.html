@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% set active = 'drivers' %}
+{% block title %}Driver Details{% endblock %}
+{% block heading %}Driver Details{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('admin.drivers') }}" class="btn ghost small" style="margin-bottom:16px;display:inline-block">
+  <i class="fa-solid fa-arrow-left"></i> Back to Drivers
+</a>
+
+<div class="panel">
+  <div class="panel-head">
+    <span>{{ d.name }}</span>
+    <span>
+      {% if d.is_blocked %}<span class="badge red">Blocked</span>
+      {% elif not d.is_verified %}<span class="badge warn">Pending</span>
+      {% elif d.is_available %}<span class="badge green">Online</span>
+      {% else %}<span class="badge gray">Offline</span>{% endif %}
+    </span>
+  </div>
+  <table>
+    <tbody>
+      <tr><th>Name</th><td>{{ d.name }}</td></tr>
+      <tr><th>Phone</th><td>{{ d.phone }}</td></tr>
+      <tr><th>Vehicle Number</th><td>{{ d.vehicle_number }}</td></tr>
+      <tr><th>Vehicle Color</th><td>{{ d.vehicle_color or '—' }}</td></tr>
+      <tr><th>Aadhaar Number</th><td>{{ d.aadhar_number or '—' }}</td></tr>
+      <tr><th>License Number</th><td>{{ d.license_number or '—' }}</td></tr>
+      <tr><th>Rating</th><td><i class="fa-solid fa-star" style="color:var(--accent)"></i> {{ '%.1f'|format(d.rating or 5) }} ({{ d.rating_count }} ratings)</td></tr>
+      <tr><th>Total Rides</th><td>{{ d.total_rides }}</td></tr>
+      <tr><th>Total Earnings</th><td>Rs.{{ '%.0f'|format(d.total_earnings or 0) }}</td></tr>
+      <tr><th>Verified</th><td>{{ 'Yes' if d.is_verified else 'No' }}</td></tr>
+      <tr><th>Last Location</th><td>
+        {% if d.current_lat %}{{ '%.5f'|format(d.current_lat) }}, {{ '%.5f'|format(d.current_lng) }}
+          <span class="muted">({{ d.last_location_update or '—' }})</span>
+        {% else %}—{% endif %}
+      </td></tr>
+      <tr><th>Joined</th><td>{{ d.created_at }}</td></tr>
+    </tbody>
+  </table>
+  <div style="padding:16px 20px;display:flex;gap:10px">
+    {% if not d.is_verified and not d.is_blocked %}
+    <form method="POST" action="{{ url_for('admin.verify_driver', driver_id=d.id) }}">
+      <button class="btn" type="submit"><i class="fa-solid fa-check"></i> Verify</button>
+    </form>
+    {% endif %}
+    {% if d.is_blocked %}
+    <form method="POST" action="{{ url_for('admin.unblock_driver', driver_id=d.id) }}">
+      <button class="btn ghost" type="submit"><i class="fa-solid fa-unlock"></i> Unblock</button>
+    </form>
+    {% else %}
+    <form method="POST" action="{{ url_for('admin.block_driver', driver_id=d.id) }}" data-confirm="Block this driver?">
+      <button class="btn danger" type="submit"><i class="fa-solid fa-ban"></i> Block</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">Recent Rides</div>
+  <table>
+    <thead><tr><th>Code</th><th>Status</th><th>Distance</th><th>Fare</th><th>Time</th></tr></thead>
+    <tbody>
+      {% for b in recent %}
+      <tr>
+        <td>{{ b.booking_code }}</td>
+        <td>{% include 'partials/_status_badge.html' %}</td>
+        <td>{{ '%.1f'|format(b.distance_km or 0) }} km</td>
+        <td>Rs.{{ '%.0f'|format(b.fare_amount or 0) }}</td>
+        <td>{{ b.requested_at }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="text-align:center;color:var(--muted)">No rides yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

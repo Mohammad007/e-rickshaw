@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% set active = 'reports' %}
+{% block title %}Reports{% endblock %}
+{% block heading %}Reports{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-head">Last 14 Days · Daily Earnings</div>
+  <table>
+    <thead><tr><th>Date</th><th>Rides</th><th>Earnings</th></tr></thead>
+    <tbody>
+      {% for d in daily %}
+      <tr>
+        <td>{{ d.day }}</td>
+        <td>{{ d.rides }}</td>
+        <td>Rs.{{ '%.0f'|format(d.earnings or 0) }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="3" style="text-align:center;color:var(--muted)">No data</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <div class="panel-head">Top Earning Drivers</div>
+  <table>
+    <thead><tr><th>Name</th><th>Vehicle</th><th>Rides</th><th>Earnings</th><th>Rating</th></tr></thead>
+    <tbody>
+      {% for d in top_drivers %}
+      <tr>
+        <td>{{ d.name }}</td>
+        <td>{{ d.vehicle_number }}</td>
+        <td>{{ d.total_rides }}</td>
+        <td>Rs.{{ '%.0f'|format(d.total_earnings or 0) }}</td>
+        <td><i class="fa-solid fa-star" style="color:var(--accent)"></i> {{ '%.1f'|format(d.rating or 5) }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" style="text-align:center;color:var(--muted)">No drivers</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

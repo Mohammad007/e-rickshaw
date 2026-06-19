@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Primary meta -->
+  <title>e-Rickshaw — Book an E-Rickshaw in Seconds</title>
+  <meta name="description"
+    content="e-Rickshaw is India's eco-friendly e-rickshaw booking app. Real-time tracking, transparent fares, OTP-secured rides, and cashless payments. Download now.">
+  <meta name="keywords"
+    content="e-rickshaw, electric rickshaw, rickshaw booking app, ride booking India, eco-friendly transport, e-Rickshaw, auto booking, cashless ride, UPI ride">
+  <meta name="author" content="e-Rickshaw">
+  <meta name="theme-color" content="#1b6b3a">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="/">
+
+  <!-- Favicon (e-rickshaw vehicle icon) -->
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='vehicle.png') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='vehicle.png') }}">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="e-Rickshaw">
+  <meta property="og:title" content="e-Rickshaw — Book an E-Rickshaw in Seconds">
+  <meta property="og:description"
+    content="India's eco-friendly e-rickshaw booking app. Live tracking, transparent fares, OTP-secured & cashless rides.">
+  <meta property="og:url" content="/">
+  <meta property="og:image" content="{{ url_for('static', filename='vehicle.png') }}">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="e-Rickshaw — Book an E-Rickshaw in Seconds">
+  <meta name="twitter:description"
+    content="India's eco-friendly e-rickshaw booking app. Live tracking, transparent fares, OTP-secured & cashless rides.">
+  <meta name="twitter:image" content="{{ url_for('static', filename='vehicle.png') }}">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1b6b3a;
+      --primary-dark: #134d2a;
+      --primary-light: #2ecc71;
+      --accent: #ff8c00;
+      --bg: #f4f6f8;
+      --text: #16241c;
+      --muted: #5b6b62;
+      --border: #e2e8e4;
+      --shadow: 0 10px 30px rgba(19, 77, 42, .10);
+      --spring: cubic-bezier(.22, 1, .36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: #fff;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 84px 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2;
+    }
+
+    .section-title {
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--muted);
+      max-width: 620px;
+      margin: 0 auto 48px;
+    }
+
+    /* ---------- Scroll progress bar ---------- */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary-light), var(--accent));
+      z-index: 200;
+      transition: width .1s linear;
+    }
+
+    /* ---------- Scroll-reveal animation system ---------- */
+    [data-reveal] {
+      opacity: 0;
+      transition: opacity .7s var(--spring), transform .7s var(--spring);
+      will-change: opacity, transform;
+    }
+
+    [data-reveal="up"] {
+      transform: translateY(40px);
+    }
+
+    [data-reveal="down"] {
+      transform: translateY(-40px);
+    }
+
+    [data-reveal="left"] {
+      transform: translateX(-50px);
+    }
+
+    [data-reveal="right"] {
+      transform: translateX(50px);
+    }
+
+    [data-reveal="scale"] {
+      transform: scale(.9);
+    }
+
+    [data-reveal].is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      [data-reveal] {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+
+      .float,
+      .hero-glow {
+        animation: none !important;
+      }
+
+      html {
+        scroll-behavior: auto;
+      }
+    }
+
+    /* ---------- Navbar ---------- */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, .82);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid transparent;
+      transition: border-color .3s ease, box-shadow .3s ease, background .3s ease;
+    }
+
+    header.scrolled {
+      border-bottom-color: var(--border);
+      box-shadow: 0 4px 20px rgba(19, 77, 42, .06);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--primary-dark);
+    }
+
+    .logo .mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(19, 77, 42, .12);
+      transition: transform .4s var(--spring);
+    }
+
+    .logo .mark img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+    }
+
+    .logo:hover .mark {
+      transform: rotate(-8deg) scale(1.08);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 15px;
+      position: relative;
+    }
+
+    .nav-links a:not(.btn)::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      height: 2px;
+      width: 0;
+      background: var(--primary);
+      transition: width .3s var(--spring);
+    }
+
+    .nav-links a:not(.btn):hover {
+      color: var(--primary);
+    }
+
+    .nav-links a:not(.btn):hover::after {
+      width: 100%;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 11px 22px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease, background .2s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(27, 107, 58, .3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(27, 107, 58, .38);
+    }
+
+    .btn-ghost {
+      background: #eaf4ee;
+      color: var(--primary-dark);
+    }
+
+    .btn-ghost:hover {
+      background: #dcece2;
+      transform: translateY(-2px);
+    }
+
+    .btn-light {
+      background: #fff;
+      color: var(--primary-dark);
+    }
+
+    .btn-light:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn.lg {
+      padding: 15px 30px;
+      font-size: 16px;
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 22px;
+      color: var(--primary-dark);
+      cursor: pointer;
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      position: relative;
+      background: radial-gradient(1200px 500px at 70% -10%, #e8f7ee, #fff);
+      padding-top: 70px;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: .5;
+      z-index: 0;
+      background: radial-gradient(circle, var(--primary-light), transparent 70%);
+      width: 420px;
+      height: 420px;
+      top: -120px;
+      right: -80px;
+      animation: drift 14s ease-in-out infinite;
+    }
+
+    @keyframes drift {
+
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+
+      50% {
+        transform: translate(-40px, 30px);
+      }
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #e8f7ee;
+      color: var(--primary-dark);
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      font-size: 52px;
+      letter-spacing: -1px;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 .grad {
+      background: linear-gradient(120deg, var(--primary), var(--primary-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p.lead {
+      font-size: 19px;
+      color: var(--muted);
+      margin-bottom: 30px;
+      max-width: 520px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .store-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .store-note i {
+      color: var(--primary);
+    }
+
+    /* phone mockup */
+    .phone-wrap {
+      display: flex;
+      justify-content: center;
+    }
+
+    .float {
+      animation: float 5s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-16px);
+      }
+    }
+
+    .phone {
+      width: 280px;
+      height: 560px;
+      background: #0e1512;
+      border-radius: 38px;
+      padding: 12px;
+      box-shadow: 0 30px 60px rgba(14, 21, 18, .35);
+      position: relative;
+    }
+
+    .phone::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 22px;
+      background: #0e1512;
+      border-radius: 0 0 14px 14px;
+      z-index: 3;
+    }
+
+    .screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 28px;
+      overflow: hidden;
+      background: linear-gradient(160deg, #2ecc71, #1b6b3a);
+      position: relative;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .screen .map {
+      flex: 1;
+      background:
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, .07) 0 1px, transparent 1px 40px),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, .07) 0 1px, transparent 1px 40px),
+        linear-gradient(160deg, #2ecc71, #1b6b3a);
+      position: relative;
+    }
+
+    .screen .pin {
+      position: absolute;
+      font-size: 26px;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .3));
+    }
+
+    .screen .pin.a {
+      top: 34%;
+      left: 28%;
+      animation: bob 2.4s ease-in-out infinite;
+    }
+
+    .screen .pin.b {
+      top: 60%;
+      left: 62%;
+      animation: bob 2.4s ease-in-out infinite .5s;
+    }
+
+    @keyframes bob {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-6px);
+      }
+    }
+
+    .screen .route {
+      position: absolute;
+      top: 40%;
+      left: 33%;
+      width: 33%;
+      height: 24%;
+      border-top: 3px dashed rgba(255, 255, 255, .8);
+      border-right: 3px dashed rgba(255, 255, 255, .8);
+      border-top-right-radius: 40px;
+    }
+
+    .screen .card {
+      background: #fff;
+      color: var(--text);
+      margin: 0;
+      padding: 18px 16px 22px;
+      border-radius: 22px 22px 28px 28px;
+    }
+
+    .screen .card .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .screen .card .av {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .screen .card .nm {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .screen .card .sm {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .screen .card .fare {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .screen .card .total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--primary-dark);
+    }
+
+    .screen .card .cta {
+      margin-top: 14px;
+      background: var(--primary);
+      color: #fff;
+      text-align: center;
+      padding: 11px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    /* ---------- Trust bar ---------- */
+    .trust {
+      background: var(--primary-dark);
+      color: #fff;
+      padding: 36px 0;
+    }
+
+    .trust .container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      text-align: center;
+    }
+
+    .trust .n {
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    .trust .l {
+      color: #bfe3cd;
+      font-size: 14px;
+    }
+
+    /* ---------- Features ---------- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: transform .25s var(--spring), box-shadow .25s ease, border-color .25s ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow);
+      border-color: #cde6d7;
+    }
+
+    .feature .ic {
+      width: 52px;
+      height: 52px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eaf4ee;
+      color: var(--primary);
+      font-size: 22px;
+      margin-bottom: 18px;
+      transition: transform .3s var(--spring), background .3s ease, color .3s ease;
+    }
+
+    .feature:hover .ic {
+      transform: scale(1.12) rotate(-6deg);
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .feature h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* ---------- How it works ---------- */
+    .how {
+      background: var(--bg);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+    }
+
+    .step {
+      text-align: center;
+    }
+
+    .step .num {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      box-shadow: 0 8px 20px rgba(27, 107, 58, .28);
+      transition: transform .3s var(--spring);
+    }
+
+    .step:hover .num {
+      transform: translateY(-6px) scale(1.06);
+    }
+
+    .step h3 {
+      font-size: 17px;
+      margin-bottom: 6px;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* ---------- Split (drivers) ---------- */
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .split ul {
+      list-style: none;
+      margin-top: 22px;
+    }
+
+    .split li {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+
+    .split li i {
+      color: var(--primary-light);
+      margin-top: 4px;
+    }
+
+    .driver-card {
+      background: linear-gradient(150deg, var(--primary-dark), var(--primary));
+      color: #fff;
+      border-radius: 22px;
+      padding: 40px;
+      box-shadow: var(--shadow);
+    }
+
+    .driver-card .big {
+      font-size: 46px;
+      font-weight: 800;
+    }
+
+    .driver-card .lbl {
+      color: #bfe3cd;
+    }
+
+    .driver-card hr {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, .18);
+      margin: 24px 0;
+    }
+
+    .driver-stats {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .driver-stats div .v {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .driver-stats div .k {
+      font-size: 13px;
+      color: #bfe3cd;
+    }
+
+    /* ---------- Download CTA ---------- */
+    .download {
+      background: radial-gradient(900px 400px at 50% 0%, #e8f7ee, #fff);
+      text-align: center;
+    }
+
+    .download .box {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(150deg, var(--primary), var(--primary-light));
+      border-radius: 28px;
+      padding: 64px 32px;
+      color: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .download .box::after {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .12);
+      top: -120px;
+      left: -80px;
+      animation: drift 12s ease-in-out infinite;
+    }
+
+    .download h2 {
+      font-size: 34px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .download p {
+      font-size: 18px;
+      opacity: .92;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .download .row {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      background: #0e1512;
+      color: #cdd6d0;
+      padding: 56px 0 30px;
+    }
+
+    .foot-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 36px;
+    }
+
+    footer .logo {
+      color: #fff;
+      margin-bottom: 14px;
+    }
+
+    footer p {
+      color: #97a59d;
+      font-size: 14px;
+      max-width: 320px;
+    }
+
+    footer h4 {
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 14px;
+    }
+
+    footer ul {
+      list-style: none;
+    }
+
+    footer ul li {
+      margin-bottom: 10px;
+    }
+
+    footer ul a {
+      color: #97a59d;
+      font-size: 14px;
+      transition: color .2s ease, padding-left .2s ease;
+    }
+
+    footer ul a:hover {
+      color: var(--primary-light);
+      padding-left: 4px;
+    }
+
+    .foot-bottom {
+      border-top: 1px solid rgba(255, 255, 255, .1);
+      padding-top: 22px;
+      text-align: center;
+      color: #79877f;
+      font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+      .hero .container {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero h1 {
+        font-size: 40px;
+      }
+
+      .hero p.lead {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .hero-actions {
+        justify-content: center;
+      }
+
+      .phone-wrap {
+        order: -1;
+        margin-bottom: 20px;
+      }
+
+      .grid,
+      .steps,
+      .trust .container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .foot-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-toggle {
+        display: block;
+      }
+
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        position: absolute;
+        top: 68px;
+        left: 0;
+        right: 0;
+        background: #fff;
+        padding: 18px 24px;
+        gap: 18px;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 12px 24px rgba(19, 77, 42, .08);
+      }
+    }
+
+    @media (max-width: 540px) {
+
+      .grid,
+      .steps,
+      .trust .container {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 60px 0;
+      }
+
+      .hero h1 {
+        font-size: 33px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- NAVBAR -->
+  <header id="header">
+    <div class="container nav">
+      <a href="#" class="logo"><span class="mark"><img src="{{ url_for('static', filename='vehicle.png') }}" alt="e-Rickshaw logo"></span> e-Rickshaw</a>
+      <nav class="nav-links" id="navLinks">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#drivers">For Drivers</a>
+        <a href="#download" class="btn btn-primary" style="color: #fff !important"><i class="fa-brands fa-android"></i>
+          Download</a>
+      </nav>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="hero-glow"></span>
+    <div class="container">
+      <div>
+        <span class="badge-pill" data-reveal="up"><i class="fa-solid fa-leaf"></i> Eco-friendly rides for India</span>
+        <h1 data-reveal="up" data-delay="80">Book an <span class="grad">e-rickshaw</span> in seconds.</h1>
+        <p class="lead" data-reveal="up" data-delay="160">e-Rickshaw connects you with nearby verified e-rickshaw
+          drivers — with live tracking, transparent fares, and OTP-secured, cashless rides.</p>
+        <div class="hero-actions" data-reveal="up" data-delay="240">
+          <a href="#download" class="btn btn-primary lg"><i class="fa-brands fa-android"></i> Download for Android</a>
+          <a href="#how" class="btn btn-ghost lg"><i class="fa-solid fa-circle-play"></i> See how it works</a>
+        </div>
+        <p class="store-note" data-reveal="up" data-delay="320"><i class="fa-solid fa-shield-halved"></i> Free to use ·
+          No hidden charges · Verified drivers</p>
+      </div>
+      <div class="phone-wrap" data-reveal="scale" data-delay="200">
+        <div class="phone float">
+          <div class="screen">
+            <div class="map">
+              <span class="pin a"><i class="fa-solid fa-location-dot"></i></span>
+              <span class="route"></span>
+              <span class="pin b"><i class="fa-solid fa-flag-checkered"></i></span>
+            </div>
+            <div class="card">
+              <div class="row">
+                <span class="av"><i class="fa-solid fa-user"></i></span>
+                <div>
+                  <div class="nm">Ramesh K. · <i class="fa-solid fa-star" style="color:#ff8c00"></i> 4.9</div>
+                  <div class="sm">UP 32 AB 1234 · Arriving in 3 min</div>
+                </div>
+              </div>
+              <div class="fare"><span>Base fare + 5.0 km</span><span>Rs.30 + Rs.45</span></div>
+              <div class="total"><span>Total fare</span><span>Rs.75</span></div>
+              <div class="cta">Confirm Ride</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST BAR -->
+  <div class="trust">
+    <div class="container">
+      <div data-reveal="up">
+        <div class="n">100%</div>
+        <div class="l">Verified Drivers</div>
+      </div>
+      <div data-reveal="up" data-delay="100">
+        <div class="n">Live</div>
+        <div class="l">GPS Tracking</div>
+      </div>
+      <div data-reveal="up" data-delay="200">
+        <div class="n">0%</div>
+        <div class="l">Surge / Hidden Fees</div>
+      </div>
+      <div data-reveal="up" data-delay="300">
+        <div class="n">24×7</div>
+        <div class="l">Rides Available</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="container">
+      <h2 class="section-title" data-reveal="up">Everything you need for a safe ride</h2>
+      <p class="section-sub" data-reveal="up" data-delay="80">Built for the everyday commuter — simple, transparent, and
+        secure from booking to drop-off.</p>
+      <div class="grid">
+        <div class="feature" data-reveal="up">
+          <div class="ic"><i class="fa-solid fa-location-crosshairs"></i></div>
+          <h3>Live Tracking</h3>
+          <p>Watch your driver approach in real time on the map, with accurate arrival estimates every step of the way.
+          </p>
+        </div>
+        <div class="feature" data-reveal="up" data-delay="100">
+          <div class="ic"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+          <h3>Transparent Fares</h3>
+          <p>See the exact fare before you book — base fare plus a fixed per-km rate. No surge pricing, no surprises.
+          </p>
+        </div>
+        <div class="feature" data-reveal="up" data-delay="200">
+          <div class="ic"><i class="fa-solid fa-shield-halved"></i></div>
+          <h3>OTP-Secured Rides</h3>
+          <p>Every ride starts with a one-time PIN, so you always board the right rickshaw with the right driver.</p>
+        </div>
+        <div class="feature" data-reveal="up">
+          <div class="ic"><i class="fa-solid fa-star"></i></div>
+          <h3>Ratings &amp; Reviews</h3>
+          <p>Rate drivers after each trip. Verified, well-rated drivers keep the whole community safe and reliable.</p>
+        </div>
+        <div class="feature" data-reveal="up" data-delay="100">
+          <div class="ic"><i class="fa-solid fa-wallet"></i></div>
+          <h3>Cash or UPI</h3>
+          <p>Pay your way — quick UPI payments or good old cash. The choice is always yours at the end of the ride.</p>
+        </div>
+        <div class="feature" data-reveal="up" data-delay="200">
+          <div class="ic"><i class="fa-solid fa-leaf"></i></div>
+          <h3>Eco-Friendly</h3>
+          <p>Every e-rickshaw ride is a zero-emission ride. Travel green and help keep your city's air cleaner.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="how">
+    <div class="container">
+      <h2 class="section-title" data-reveal="up">Ride in 4 simple steps</h2>
+      <p class="section-sub" data-reveal="up" data-delay="80">From opening the app to reaching your destination — it
+        takes just a few taps.</p>
+      <div class="steps">
+        <div class="step" data-reveal="up">
+          <div class="num">1</div>
+          <h3>Set your trip</h3>
+          <p>Enter your pickup and drop location to instantly see nearby drivers and your fare.</p>
+        </div>
+        <div class="step" data-reveal="up" data-delay="100">
+          <div class="num">2</div>
+          <h3>Book a ride</h3>
+          <p>Confirm and get matched with the closest available verified e-rickshaw driver.</p>
+        </div>
+        <div class="step" data-reveal="up" data-delay="200">
+          <div class="num">3</div>
+          <h3>Track &amp; board</h3>
+          <p>Follow your driver live, share your OTP, and hop in with confidence.</p>
+        </div>
+        <div class="step" data-reveal="up" data-delay="300">
+          <div class="num">4</div>
+          <h3>Pay &amp; rate</h3>
+          <p>Pay by cash or UPI, then rate your driver to help the community.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOR DRIVERS -->
+  <section id="drivers">
+    <div class="container split">
+      <div data-reveal="left">
+        <span class="badge-pill"><i class="fa-solid fa-id-card"></i> For Drivers</span>
+        <h2 class="section-title" style="text-align:left;margin-top:14px">Drive with e-Rickshaw, earn more</h2>
+        <p style="color:var(--muted);font-size:17px">Turn your e-rickshaw into a steady income. Get ride requests from
+          passengers nearby and grow your earnings — on your schedule.</p>
+        <ul>
+          <li><i class="fa-solid fa-circle-check"></i> Receive ride requests from passengers within 5 km</li>
+          <li><i class="fa-solid fa-circle-check"></i> Go online or offline whenever it suits you</li>
+          <li><i class="fa-solid fa-circle-check"></i> Track your daily earnings and completed rides</li>
+          <li><i class="fa-solid fa-circle-check"></i> Build your reputation with passenger ratings</li>
+        </ul>
+        <a href="#download" class="btn btn-primary lg" style="margin-top:8px"><i class="fa-brands fa-android"></i> Get
+          the Driver App</a>
+      </div>
+      <div class="driver-card" data-reveal="right" data-delay="120">
+        <div class="lbl">Today's earnings</div>
+        <div class="big">Rs.<span class="count" data-count="1240">0</span></div>
+        <hr>
+        <div class="driver-stats">
+          <div>
+            <div class="v"><span class="count" data-count="18">0</span></div>
+            <div class="k">Rides today</div>
+          </div>
+          <div>
+            <div class="v"><i class="fa-solid fa-star"></i> 4.8</div>
+            <div class="k">Rating</div>
+          </div>
+          <div>
+            <div class="v">6h</div>
+            <div class="k">Online</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section id="download" class="download">
+    <div class="container">
+      <div class="box" data-reveal="scale">
+        <h2>Ready to ride?</h2>
+        <p>Download e-Rickshaw and get moving in minutes.</p>
+        <div class="row">
+          <a href="/download" class="btn btn-light lg"><i class="fa-brands fa-android"></i> Download APK</a>
+          <a href="#features" class="btn btn-ghost lg" style="background:rgba(255,255,255,.18);color:#fff"><i
+              class="fa-solid fa-circle-info"></i> Learn more</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="foot-grid">
+        <div data-reveal="up">
+          <div class="logo"><span class="mark"><img src="{{ url_for('static', filename='vehicle.png') }}" alt="e-Rickshaw logo"></span> e-Rickshaw</div>
+          <p>India's eco-friendly e-rickshaw booking platform — connecting passengers with verified drivers for safe,
+            affordable, and clean rides.</p>
+        </div>
+        <div data-reveal="up" data-delay="100">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how">How it works</a></li>
+            <li><a href="#drivers">For Drivers</a></li>
+            <li><a href="/download">Download</a></li>
+          </ul>
+        </div>
+        <div data-reveal="up" data-delay="200">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#download">Get the App</a></li>
+            <li><a href="#features">Safety</a></li>
+            <li><a href="#drivers">Earn with us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot-bottom">© 2026 e-Rickshaw. All rights reserved. · Made for greener cities.</div>
+    </div>
+  </footer>
+
+  <script>
+    // ---- Scroll progress bar + sticky navbar shadow ----
+    var progress = document.getElementById('scrollProgress');
+    var header = document.getElementById('header');
+    function onScroll() {
+      var st = window.scrollY || document.documentElement.scrollTop;
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.width = (h > 0 ? (st / h) * 100 : 0) + '%';
+      header.classList.toggle('scrolled', st > 8);
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // ---- Scroll-reveal (IntersectionObserver, framer-motion-style entrances) ----
+    var revealEls = document.querySelectorAll('[data-reveal]');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            var el = entry.target;
+            var delay = parseInt(el.getAttribute('data-delay') || '0', 10);
+            el.style.transitionDelay = delay + 'ms';
+            el.classList.add('is-visible');
+            io.unobserve(el);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+      revealEls.forEach(function (el) { io.observe(el); });
+    } else {
+      revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+    }
+
+    // ---- Count-up numbers (run once when the driver card scrolls in) ----
+    function animateCount(el) {
+      var target = parseInt(el.getAttribute('data-count'), 10);
+      var dur = 1400, start = null;
+      function tick(ts) {
+        if (!start) start = ts;
+        var p = Math.min((ts - start) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+        el.textContent = Math.floor(eased * target).toLocaleString('en-IN');
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+    var counters = document.querySelectorAll('.count');
+    if ('IntersectionObserver' in window && counters.length) {
+      var cio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) { animateCount(entry.target); cio.unobserve(entry.target); }
+        });
+      }, { threshold: 0.5 });
+      counters.forEach(function (el) { cio.observe(el); });
+    }
+
+    // ---- Mobile nav toggle ----
+    var t = document.getElementById('navToggle');
+    var l = document.getElementById('navLinks');
+    if (t && l) {
+      t.addEventListener('click', function () { l.classList.toggle('open'); });
+      l.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () { l.classList.remove('open'); });
+      });
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Admin{% endblock %} · e-Rickshaw</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin.css') }}">
+</head>
+
+<body data-autorefresh="{% block autorefresh %}0{% endblock %}">
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><img src="{{ url_for('static', filename='vehicle.png') }}" alt="e-Rickshaw" class="brand-logo"> <span>e-Rickshaw</span></div>
+      <nav>
+        <a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if active=='dashboard' }}"><i
+            class="fa-solid fa-chart-line fa-fw"></i> <span>Dashboard</span></a>
+        <a href="{{ url_for('admin.drivers') }}" class="{{ 'active' if active=='drivers' }}"><i
+            class="fa-solid fa-id-card fa-fw"></i> <span>Drivers</span></a>
+        <a href="{{ url_for('admin.users') }}" class="{{ 'active' if active=='users' }}"><i
+            class="fa-solid fa-users fa-fw"></i> <span>Passengers</span></a>
+        <a href="{{ url_for('admin.bookings') }}" class="{{ 'active' if active=='bookings' }}"><i
+            class="fa-solid fa-list-check fa-fw"></i> <span>Bookings</span></a>
+        <a href="{{ url_for('admin.fare_management') }}" class="{{ 'active' if active=='fare' }}"><i
+            class="fa-solid fa-indian-rupee-sign fa-fw"></i> <span>Fare</span></a>
+        <a href="{{ url_for('admin.reports') }}" class="{{ 'active' if active=='reports' }}"><i
+            class="fa-solid fa-chart-pie fa-fw"></i> <span>Reports</span></a>
+      </nav>
+      <div class="logout">
+        <a href="{{ url_for('admin.logout') }}" class="btn ghost small"><i class="fa-solid fa-right-from-bracket"></i>
+          Logout</a>
+      </div>
+    </aside>
+
+    <div class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1>{% block heading %}{% endblock %}</h1>
+        </div>
+        <div class="profile-menu" id="profileMenu">
+          <button type="button" class="profile-btn" id="profileBtn">
+            <span class="avatar"><i class="fa-solid fa-user"></i></span>
+            <span class="profile-name">{{ session.get('admin_username', 'admin') }}</span>
+            <i class="fa-solid fa-chevron-down caret"></i>
+          </button>
+          <div class="profile-dropdown" id="profileDropdown">
+            <div class="profile-head">
+              <span class="avatar lg"><i class="fa-solid fa-user"></i></span>
+              <div>
+                <div class="profile-dropdown-name">{{ session.get('admin_username', 'admin') }}</div>
+                <div class="profile-role">Administrator</div>
+              </div>
+            </div>
+            <a href="{{ url_for('admin.logout') }}" class="profile-dropdown-item"><i
+                class="fa-solid fa-right-from-bracket fa-fw"></i> Logout</a>
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+        <div class="flash">{{ message }}</div>
+        {% endfor %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('admin.static', filename='js/admin.js') }}"></script>
+</body>
+
+</html>

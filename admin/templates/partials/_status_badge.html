@@ -1,0 +1,9 @@
+{% set s = b.status %}
+{% if s == 'completed' %}<span class="badge green">Completed</span>
+{% elif s == 'cancelled' %}<span class="badge red">Cancelled</span>
+{% elif s == 'searching' %}<span class="badge warn">Searching</span>
+{% elif s == 'accepted' %}<span class="badge blue">Accepted</span>
+{% elif s == 'driver_arrived' %}<span class="badge blue">Arrived</span>
+{% elif s == 'ride_started' %}<span class="badge blue">In Progress</span>
+{% else %}<span class="badge gray">{{ s }}</span>
+{% endif %}

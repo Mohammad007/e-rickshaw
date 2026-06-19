@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login · e-Rickshaw Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/admin.css') }}">
+</head>
+
+<body>
+  <div class="login-wrap">
+    <form class="login-card" method="POST" action="{{ url_for('admin.login') }}">
+      <img src="{{ url_for('static', filename='vehicle.png') }}" alt="e-Rickshaw" class="login-logo">
+      <h1>e-Rickshaw</h1>
+      <p class="sub">Admin Panel</p>
+      {% if error %}<div class="error-box">{{ error }}</div>{% endif %}
+      <div class="form-row">
+        <label>Username</label>
+        <input type="text" name="username" autofocus required>
+      </div>
+      <div class="form-row">
+        <label>Password</label>
+        <input type="password" name="password" required>
+      </div>
+      <button class="btn" type="submit">Login</button>
+    </form>
+  </div>
+</body>
+
+</html>

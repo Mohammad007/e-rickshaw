@@ -1,0 +1,13 @@
+flask==3.0.0
+flask-cors==4.0.0
+flask-socketio==5.3.6
+flask-jwt-extended==4.6.0
+werkzeug==3.0.1
+python-dotenv==1.0.0
+requests==2.31.0
+geopy==2.4.1
+
+# Production server (used on Railway). gunicorn runs the app; eventlet gives
+# SocketIO a real async worker for live location tracking.
+gunicorn==21.2.0
+eventlet==0.35.2

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% set active = 'dashboard' %}
+{% block title %}Dashboard{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+{% block autorefresh %}1{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="label">Total Drivers</div>
+    <div class="value green">{{ stats.total_drivers }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Active Now</div>
+    <div class="value">{{ stats.active_drivers }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Pending Verification</div>
+    <div class="value warn">{{ stats.pending_verification }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Total Passengers</div>
+    <div class="value">{{ stats.total_users }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Today's Rides</div>
+    <div class="value green">{{ stats.today_rides }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Today's Earnings</div>
+    <div class="value accent">Rs.{{ '%.0f'|format(stats.today_earnings) }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Active Rides</div>
+    <div class="value">{{ stats.active_rides }}</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">Recent Bookings
+    <a href="{{ url_for('admin.bookings') }}" class="btn ghost small">View All</a>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Code</th><th>Passenger</th><th>Driver</th><th>Fare</th><th>Status</th><th>Time</th></tr>
+    </thead>
+    <tbody>
+      {% for b in recent %}
+      <tr>
+        <td>{{ b.booking_code }}</td>
+        <td>{{ b.user_name or '—' }}</td>
+        <td>{{ b.driver_name or '—' }}</td>
+        <td>Rs.{{ '%.0f'|format(b.fare_amount or 0) }}</td>
+        <td>{% include 'partials/_status_badge.html' %}</td>
+        <td>{{ b.requested_at }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" style="text-align:center;color:var(--muted)">No bookings yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% set active = 'users' %}
+{% block title %}Passengers{% endblock %}
+{% block heading %}Passengers{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-head">Passenger List ({{ users|length }})</div>
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Phone</th><th>Rides</th><th>Emergency Contact</th><th>Joined</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.name or '—' }}</td>
+        <td>{{ u.phone }}</td>
+        <td>{{ u.total_rides }}</td>
+        <td>{{ u.emergency_contact or '—' }}</td>
+        <td>{{ u.created_at }}</td>
+        <td><a href="{{ url_for('admin.user_detail', user_id=u.id) }}" class="btn small ghost"><i class="fa-solid fa-eye"></i> View</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" style="text-align:center;color:var(--muted)">No passengers</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% set active = 'users' %}
+{% block title %}Passenger Details{% endblock %}
+{% block heading %}Passenger Details{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('admin.users') }}" class="btn ghost small" style="margin-bottom:16px;display:inline-block">
+  <i class="fa-solid fa-arrow-left"></i> Back to Passengers
+</a>
+
+<div class="panel">
+  <div class="panel-head">{{ u.name or 'Passenger' }}</div>
+  <table>
+    <tbody>
+      <tr><th>Name</th><td>{{ u.name or '—' }}</td></tr>
+      <tr><th>Phone</th><td>{{ u.phone }}</td></tr>
+      <tr><th>Emergency Contact</th><td>{{ u.emergency_contact or '—' }}</td></tr>
+      <tr><th>Total Rides</th><td>{{ u.total_rides }}</td></tr>
+      <tr><th>Completed Rides</th><td>{{ completed }}</td></tr>
+      <tr><th>Language</th><td>{{ u.language }}</td></tr>
+      <tr><th>Joined</th><td>{{ u.created_at }}</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <div class="panel-head">Recent Rides</div>
+  <table>
+    <thead><tr><th>Code</th><th>Driver</th><th>Status</th><th>Distance</th><th>Fare</th><th>Time</th></tr></thead>
+    <tbody>
+      {% for b in recent %}
+      <tr>
+        <td>{{ b.booking_code }}</td>
+        <td>{{ b.driver_name or '—' }}</td>
+        <td>{% include 'partials/_status_badge.html' %}</td>
+        <td>{{ '%.1f'|format(b.distance_km or 0) }} km</td>
+        <td>Rs.{{ '%.0f'|format(b.fare_amount or 0) }}</td>
+        <td>{{ b.requested_at }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" style="text-align:center;color:var(--muted)">No rides yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

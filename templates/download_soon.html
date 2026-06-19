@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download · e-Rickshaw</title>
+  <meta name="theme-color" content="#1b6b3a">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='vehicle.png') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(150deg, #1b6b3a, #2ecc71);
+      color: #fff;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .2);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: 56px 40px;
+      max-width: 460px;
+    }
+
+    .ic {
+      width: 96px;
+      height: 96px;
+      margin: 0 auto 24px;
+      border-radius: 24px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, .15);
+    }
+
+    .ic img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      opacity: .9;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: #fff;
+      color: #134d2a;
+      padding: 13px 26px;
+      border-radius: 10px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="ic"><img src="{{ url_for('static', filename='vehicle.png') }}" alt="e-Rickshaw"></div>
+    <h1>Download coming soon</h1>
+    <p>The e-Rickshaw Android app is being prepared for release. Check back shortly — it'll be available to download
+      right here.</p>
+    <a href="/" class="btn"><i class="fa-solid fa-arrow-left"></i> Back to home</a>
+  </div>
+</body>
+
+</html>

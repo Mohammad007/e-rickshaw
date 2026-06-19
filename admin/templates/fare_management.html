@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% set active = 'fare' %}
+{% block title %}Fare{% endblock %}
+{% block heading %}Fare Management{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-head">Fare Rates</div>
+  <form method="POST" action="{{ url_for('admin.fare_management') }}" style="padding:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0 24px">
+      <div class="form-row">
+        <label>Base Fare (minimum fare) Rs.</label>
+        <input type="number" step="0.5" name="base_fare" value="{{ fare.base_fare }}" required>
+        <div class="hint">Minimum fare charged for every ride</div>
+      </div>
+      <div class="form-row">
+        <label>Per KM Rate Rs.</label>
+        <input type="number" step="0.5" name="per_km_rate" value="{{ fare.per_km_rate }}" required>
+      </div>
+      <div class="form-row">
+        <label>Per Extra Person Rs.</label>
+        <input type="number" step="0.5" name="per_person_extra" value="{{ fare.per_person_extra }}" required>
+        <div class="hint">Added for each passenger beyond the first</div>
+      </div>
+      <div class="form-row">
+        <label>Night Multiplier</label>
+        <input type="number" step="0.1" name="night_multiplier" value="{{ fare.night_multiplier }}" required>
+        <div class="hint">Fare is multiplied by this during night hours (e.g. 1.5)</div>
+      </div>
+      <div class="form-row">
+        <label>Night Start Hour (24h)</label>
+        <input type="number" min="0" max="23" name="night_start_hour" value="{{ fare.night_start_hour }}" required>
+      </div>
+      <div class="form-row">
+        <label>Night End Hour (24h)</label>
+        <input type="number" min="0" max="23" name="night_end_hour" value="{{ fare.night_end_hour }}" required>
+      </div>
+    </div>
+    <button class="btn" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+  </form>
+</div>
+
+<div class="panel">
+  <div class="panel-head">Example</div>
+  <div style="padding:16px 20px;color:var(--muted)">
+    A 5 km ride ≈ Rs.{{ '%.0f'|format(((fare.base_fare + 5 * fare.per_km_rate) / 5)|round * 5) }}
+    (daytime) · Last updated: {{ fare.updated_at }}
+  </div>
+</div>
+{% endblock %}

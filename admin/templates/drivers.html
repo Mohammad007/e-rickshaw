@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% set active = 'drivers' %}
+{% block title %}Drivers{% endblock %}
+{% block heading %}Drivers{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <div class="panel-head">
+    <span>Driver List</span>
+    <div class="filters">
+      <a href="{{ url_for('admin.drivers', filter='all') }}" class="{{ 'active' if filter=='all' }}">All</a>
+      <a href="{{ url_for('admin.drivers', filter='pending') }}" class="{{ 'active' if filter=='pending' }}">Pending</a>
+      <a href="{{ url_for('admin.drivers', filter='active') }}" class="{{ 'active' if filter=='active' }}">Online</a>
+      <a href="{{ url_for('admin.drivers', filter='blocked') }}" class="{{ 'active' if filter=='blocked' }}">Blocked</a>
+    </div>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Phone</th><th>Vehicle</th><th>Rating</th><th>Rides</th><th>Status</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      {% for d in drivers %}
+      <tr>
+        <td>{{ d.name }}</td>
+        <td>{{ d.phone }}</td>
+        <td>{{ d.vehicle_number }} <span class="muted">{{ d.vehicle_color }}</span></td>
+        <td><i class="fa-solid fa-star" style="color:var(--accent)"></i> {{ '%.1f'|format(d.rating or 5) }}</td>
+        <td>{{ d.total_rides }}</td>
+        <td>
+          {% if d.is_blocked %}<span class="badge red">Blocked</span>
+          {% elif not d.is_verified %}<span class="badge warn">Pending</span>
+          {% elif d.is_available %}<span class="badge green">Online</span>
+          {% else %}<span class="badge gray">Offline</span>{% endif %}
+        </td>
+        <td>
+          <a href="{{ url_for('admin.driver_detail', driver_id=d.id) }}" class="btn small ghost"><i class="fa-solid fa-eye"></i> View</a>
+          {% if not d.is_verified and not d.is_blocked %}
+          <form method="POST" action="{{ url_for('admin.verify_driver', driver_id=d.id) }}" style="display:inline">
+            <button class="btn small" type="submit"><i class="fa-solid fa-check"></i> Verify</button>
+          </form>
+          {% endif %}
+          {% if d.is_blocked %}
+          <form method="POST" action="{{ url_for('admin.unblock_driver', driver_id=d.id) }}" style="display:inline">
+            <button class="btn small ghost" type="submit"><i class="fa-solid fa-unlock"></i> Unblock</button>
+          </form>
+          {% else %}
+          <form method="POST" action="{{ url_for('admin.block_driver', driver_id=d.id) }}" style="display:inline"
+                data-confirm="Block this driver?">
+            <button class="btn small danger" type="submit"><i class="fa-solid fa-ban"></i> Block</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" style="text-align:center;color:var(--muted)">No drivers found</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
